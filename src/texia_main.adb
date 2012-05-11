@@ -5,7 +5,8 @@
 -- All rights reserved.                                                     --
 --                                                                          --
 -- This file is part of TeXiA.                                              --
---                                                                          --                                                                         --
+--                                                                          --
+----
 -- TeXiA is free software: you can redistribute it and/or modify            --
 -- it under the terms of the GNU General Public License as published by     --
 -- the Free Software Foundation, either version 3 of the License, or        --
@@ -20,14 +21,14 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.    --
 ------------------------------------------------------------------------------
 
-with TeX;
-
+with TeXiA;
+with TeXiA.File_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 
-procedure Texia is
+procedure TeXiA_Main is
 
 begin
-   Put_Line ("TeXia verison: " & TeX.Version);
-   Put_Line (TeX.Copyright);
-   Put_Line (TeX.GPL_notice);
-end Texia;
+   Put_Line ("TeXiA " & TeXiA.Version);
+   Put_Line (TeXiA.Copyright);
+   Put_Line (TeXiA.GPL_notice);
+end TeXiA_Main;
