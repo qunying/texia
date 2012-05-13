@@ -19,29 +19,10 @@
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
 
-with Ada.Text_IO;
-
-package TeXiA.File_IO is
-
-   Buffer_Overflow : exception;
-
-   -- s.31 brings the next line of input from the given file into available
-   -- positions of the buffer array and returns true, unless the file has
-   -- already been entirely read, in which case it reutrns false and
-   -- set ctx.last := ctx.first
-   function input_ln
-     (ctx         : access TeXiA.Context_t;
-      file        : Ada.Text_IO.File_Type;
-      bypass_eoln : Boolean)
-      return        Boolean;
-
-   --  Determines if C is a blank (space or tab)
-   function Is_Blank (C : Character) return Boolean;
-   pragma Inline (Is_Blank);
-
-   -- Determinse if C is a end of line character, either CR or LF
-   function Is_EoL (C : Character) return Boolean;
-   pragma Inline (Is_Blank);
-end TeXiA.File_IO;
-
--- vim: sw=3 ts=8 sts=3 expandtab:
+with Ahven.Framework;
+package input_ln_test is
+   type Test is new Ahven.Framework.Test_Case with null record;
+   procedure Initialize (T : in out Test);
+private
+   procedure Test_Addition;
+end input_ln_test;

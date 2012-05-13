@@ -123,15 +123,16 @@ package TeXiA is
 
    subtype name_length_t is Integer range 1 .. file_name_size;
    subtype buf_range_t is Integer range 1 .. buf_size + 1;
+
    type Context_t is record
       bad           : Integer;
       name_of_file  : String (1 .. file_name_size);
       name_length   : name_length_t;
       buffer        : String (buf_range_t'Range);
-      first         : buf_range_t;
-      last          : buf_range_t;
-      max_buf_stack : buf_range_t;
-
+      first         : buf_range_t := 1;
+      last          : buf_range_t := 1;
+      max_buf_stack : buf_range_t := 1;
+      loc           : buf_range_t;
    end record;
 
 end TeXiA;

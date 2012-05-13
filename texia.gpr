@@ -1,16 +1,28 @@
 project Texia is
 
-   for Source_Dirs use ("src");
-   for Object_Dir use "obj";
    for Main use ("texia_main.adb");
+   for Object_Dir use "obj/";
+   for Source_Dirs use ("src");
+   for Exec_Dir use ".";
 
    package Builder is
-      for Executable ("texia_main.adb") use "texia";
+     for Default_Switches ("ada") use ("-s", "-m");
+     for Executable ("texia_main.adb") use "texia";
    end Builder;
 
    package Pretty_Printer is
-      for Default_Switches ("ada") use ("-W8", "--no-separate-is", "--no-separate-loop-then", "-c4");
+
+    for Default_Switches ("ada") use ("-W8", "--no-separate-is", "--no-separate-loop-then", "-c4");
    end Pretty_Printer;
+
+   package Ide is
+      for Vcs_Kind use "Git";
+   end Ide;
+
+   package Compiler is
+
+    for Default_Switches ("ada") use ("-g", "-gnatyaAbBdfhiklOprStuxC", "-gnat05");
+   end Compiler;
 
 end Texia;
 

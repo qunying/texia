@@ -1,0 +1,31 @@
+with "texia.gpr";
+with "ahven.gpr";
+
+project Texia_Tester is
+
+   for Languages use ("Ada");
+   for Source_Dirs use (".", "tester");
+   for Source_Files use ("input_ln_test.adb", "input_ln_test.ads", "texia_tester.adb");
+   for Object_Dir use "obj/";
+   for Main use ("texia_tester.adb");
+   for Exec_Dir use ".";
+
+   package Ide is
+      for Vcs_Kind use "Git";
+   end Ide;
+
+   package Builder is
+
+    for Default_Switches ("ada") use ("-s", "-m", "-g", "-j2");
+    for Executable ("texia_tester.adb") use "texia-tester";
+
+   end Builder;
+
+   package Compiler is
+
+    for Default_Switches ("ada") use ("-g", "-gnatyaAbBCdefhiIkloprutx");
+
+   end Compiler;
+
+end Texia_Tester;
+
