@@ -19,11 +19,12 @@
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
 with Ada.Characters.Latin_1;
-with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Integer_Text_IO;
 
 package body TeXiA.File_IO is
 
    use Ada.Text_IO;
+   use Ada.Integer_Text_IO;
    package Latin_1 renames Ada.Characters.Latin_1;
 
    function input_ln

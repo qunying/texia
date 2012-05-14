@@ -19,12 +19,13 @@
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
 
-with TeXiA.File_IO;
 with Ada.Text_IO;
 with Ada.Text_IO.Text_Streams;
 with Ada.Strings.Unbounded;
 with Ada.Characters.Latin_1;
 with Ada.Streams.Stream_IO;
+
+with TeXiA.File_IO;
 
 package body input_ln_test is
    use Ahven.Framework;
@@ -57,7 +58,7 @@ package body input_ln_test is
    procedure Test_Addition is
       texia_ctx      : aliased TeXiA.Context_t;
       test_file      : TIO.File_Type;
-      line_test_data : line_test_lst (1 .. 6);
+      line_test_data : line_test_lst (1 .. 7);
       val            : Boolean;
       test_filename  : constant String := "/tmp/input_ln_test.dat";
       test_stream    : SIO.File_Type;
@@ -85,11 +86,14 @@ package body input_ln_test is
       line_test_data (5).last     := 1;
       line_test_data (5).expect   := False;
 
-      line_test_data (6).line_dat :=
-        +("end of file" & Latin_1.LF & Latin_1.CR);
-      line_test_data (6).last     := SU.Length (line_test_data (6).line_dat) -
+      line_test_data (6).line_dat := +(Latin_1.CR & Latin_1.CR & Latin_1.LF);
+      line_test_data (6).last     := 1;
+      line_test_data (6).expect   := False;
+
+      line_test_data (7).line_dat := +("    end" & Latin_1.LF & Latin_1.CR);
+      line_test_data (7).last     := SU.Length (line_test_data (7).line_dat) -
                                      2;
-      line_test_data (6).expect   := True;
+      line_test_data (7).expect   := True;
 
       SIO.Create (test_stream, SIO.Out_File, test_filename);
       for i in line_test_data'Range loop
