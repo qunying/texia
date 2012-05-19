@@ -24,6 +24,7 @@ with Ada.Text_IO.Text_Streams;
 with Ada.Strings.Unbounded;
 with Ada.Characters.Latin_1;
 with Ada.Streams.Stream_IO;
+with Ada.Exceptions;
 
 with TeXiA.File_IO;
 
@@ -31,10 +32,11 @@ package body input_ln_test is
    use Ahven.Framework;
    use Ada.Text_IO;
    use Ada.Text_IO.Text_Streams;
+   use Ada.Exceptions;
    use TeXiA.File_IO;
 
    package SU renames Ada.Strings.Unbounded;
-   package Latin_1 renames Ada.Characters.Latin_1;
+   package Char renames Ada.Characters.Latin_1;
    package SIO renames Ada.Streams.Stream_IO;
    package TIO renames Ada.Text_IO;
 
@@ -46,6 +48,7 @@ package body input_ln_test is
       line_dat : SU.Unbounded_String;
       last     : TeXiA.buf_range_t;
       expect   : Boolean;
+      empty    : Boolean := False;
    end record;
    type line_test_lst is array (Positive range <>) of line_test;
 
@@ -63,34 +66,36 @@ package body input_ln_test is
       test_filename  : constant String := "/tmp/input_ln_test.dat";
       test_stream    : SIO.File_Type;
    begin
-      line_test_data (1).line_dat := +("line1 data" & Latin_1.LF);
+      line_test_data (1).line_dat := +("line1 data" & Char.LF);
       line_test_data (1).last     := SU.Length (line_test_data (1).line_dat) -
                                      1;
       line_test_data (1).expect   := True;
 
-      line_test_data (2).line_dat := +("line2 data" & Latin_1.LF);
+      line_test_data (2).line_dat := +("line2 data" & Char.LF);
       line_test_data (2).last     := SU.Length (line_test_data (2).line_dat) -
                                      1;
       line_test_data (2).expect   := True;
 
-      line_test_data (3).line_dat :=
-        +("line3 data               " & Latin_1.LF);
+      line_test_data (3).line_dat := +("line3 data               " & Char.LF);
       line_test_data (3).last     := line_test_data (2).last;
       line_test_data (3).expect   := True;
 
-      line_test_data (4).line_dat := +(Latin_1.CR & Latin_1.LF);
+      line_test_data (4).line_dat := +(Char.CR & Char.LF);
       line_test_data (4).last     := 1;
-      line_test_data (4).expect   := False;
+      line_test_data (4).expect   := True;
+      line_test_data (4).empty    := True;
 
-      line_test_data (5).line_dat := +(Latin_1.LF & Latin_1.CR);
+      line_test_data (5).line_dat := +(Char.LF & Char.CR);
       line_test_data (5).last     := 1;
-      line_test_data (5).expect   := False;
+      line_test_data (5).expect   := True;
+      line_test_data (5).empty    := True;
 
-      line_test_data (6).line_dat := +(Latin_1.CR & Latin_1.CR & Latin_1.LF);
+      line_test_data (6).line_dat := +(Char.CR & Char.CR & Char.LF);
       line_test_data (6).last     := 1;
-      line_test_data (6).expect   := False;
+      line_test_data (6).expect   := True;
+      line_test_data (6).empty    := True;
 
-      line_test_data (7).line_dat := +("    end" & Latin_1.LF & Latin_1.CR);
+      line_test_data (7).line_dat := +("    end" & Char.LF & Char.CR);
       line_test_data (7).last     := SU.Length (line_test_data (7).line_dat) -
                                      2;
       line_test_data (7).expect   := True;
@@ -104,12 +109,14 @@ package body input_ln_test is
       SIO.Close (test_stream);
       Open (test_file, In_File, test_filename);
       for i in line_test_data'Range loop
-         val := input_ln (texia_ctx'Access, test_file, True);
+         val := input_ln (texia_ctx'Access, test_file);
          if val /= line_test_data (i).expect
            or else (line_test_data (i).expect
-                   and then (texia_ctx.buffer (1 .. texia_ctx.last) /=
-                             SU.To_String (line_test_data (i).line_dat) (
-               1 .. line_test_data (i).last)))
+                   and then ((line_test_data (i).empty
+                             and then texia_ctx.last /= texia_ctx.first)
+                            or else (line_test_data (i).empty /= True
+               and then texia_ctx.buffer (1 .. texia_ctx.last - 1) /=
+               SU.To_String (line_test_data (i).line_dat) (1 .. line_test_data (i).last))))
          then
             Ahven.Fail ("Line" & Integer'Image (i) & " read error");
          end if;
@@ -118,17 +125,19 @@ package body input_ln_test is
 
       -- test for buffer overflow exception
       SIO.Open (test_stream, SIO.Out_File, test_filename);
-      for i in 1 .. TeXiA.buf_range_t'Last loop
+      for i in 1 .. TeXiA.buf_range_t'Last - 1 loop
          Character'Write (SIO.Stream (test_stream), 'A');
       end loop;
       SIO.Close (test_stream);
       Open (test_file, In_File, test_filename);
-      val := input_ln (texia_ctx'Access, test_file, True);
+      val := input_ln (texia_ctx'Access, test_file);
       Close (test_file);
-      Ahven.Fail ("No exception capture");
+      Ahven.Fail ("No exception captured.");
    exception
       when Buffer_Overflow =>
          null; -- Working Good
+      when Error : others =>
+         Ahven.Fail ("Unexpected exception:" & Exception_Information (Error));
    end Test_Addition;
 end input_ln_test;
 

@@ -27,60 +27,60 @@ package body TeXiA.File_IO is
    use Ada.Integer_Text_IO;
    package Latin_1 renames Ada.Characters.Latin_1;
 
+   ---------------------------------------------------------------------------
    function input_ln
-     (ctx         : access TeXiA.Context_t;
-      file        : Ada.Text_IO.File_Type;
-      bypass_eoln : Boolean)
-      return        Boolean
+     (ctx  : access TeXiA.Context_t;
+      file : Ada.Text_IO.File_Type)
+      return Boolean
    is
-      last        : Natural;
-      first       : buf_range_t := 1;
-      eol_trimmed : Boolean     := False;
+      last         : Natural;
+      first        : buf_range_t := ctx.first;
+      crln_trimmed : Boolean     := False;
    begin
       ctx.last := ctx.first;
+
       Get_Line (File => file, Item => ctx.buffer, Last => last);
-      if last = buf_range_t'Last then
+      if last + 2 >= buf_range_t'Last then
          -- report overflow here
          Put
            (Standard_Error,
             "! Unable to read an entire line---" & "bufsize=");
          -- output buffer range without leading space
-         Put (Item => Integer (buf_range_t'Last), Width => 1);
+         Put (Item => Integer (buf_range_t'Last - 1), Width => 1);
          New_Line;
          Put_Line (Standard_Error, "Please increase buf_size in texia.ads.");
          raise Buffer_Overflow;
       end if;
       if last = 0 then
-         return False;
+         return True;
       end if;
 
-      ctx.last := buf_range_t (last);
-      if ctx.last = ctx.first then
-         return False;
-      end if;
+      ctx.last := buf_range_t (last) + 1;
+
       if ctx.last > ctx.max_buf_stack then
-         ctx.max_buf_stack := ctx.last;
+         ctx.max_buf_stack := ctx.last + 1;
       end if;
       -- trim space at the end
-      while ctx.last > ctx.first and then Is_Blank (ctx.buffer (ctx.last))
+      while ctx.last > ctx.first and then Is_Blank (ctx.buffer (ctx.last - 1))
       loop
          ctx.last := ctx.last - 1;
       end loop;
 
       -- trim CR or LF in the front
       while first < ctx.last and then Is_EoL (ctx.buffer (first)) loop
-         first       := first + 1;
-         eol_trimmed := True;
+         first        := first + 1;
+         crln_trimmed := True;
       end loop;
-      if eol_trimmed then
-         if first = ctx.last and then Is_EoL (ctx.buffer (first)) then
+      if crln_trimmed then
+         if first = ctx.last then
             ctx.last := ctx.first;
-            return False;
          else
-            ctx.buffer (1 .. (ctx.last - first + 1))   :=
-              ctx.buffer (first .. ctx.last);
+            first                                      := first - 1;
 
-            ctx.last := ctx.last - first + 1;
+            ctx.buffer (1 .. (ctx.last - 1 - first))   :=
+              ctx.buffer (first + 1 .. ctx.last - 1);
+
+            ctx.last := ctx.last - first;
          end if;
       end if;
 
@@ -90,11 +90,34 @@ package body TeXiA.File_IO is
          return False;
    end input_ln;
 
+   ---------------------------------------------------------------------------
+   -- s.37 init terminal
+   function init_terminal (ctx : access TeXiA.Context_t) return Boolean is
+   begin
+      loop
+         Put ("**");
+         Flush (Standard_Output);
+         if not input_ln (ctx, Standard_Input) then
+            New_Line;
+            Put_Line ("! End of file on the terminal... why?");
+            return False;
+         end if;
+         --- need to use current input st
+         if ctx.last = ctx.first then
+            New_Line;
+            Put_Line ("Please type the name of your input file.");
+         end if;
+         return True;
+      end loop;
+   end init_terminal;
+
+   ---------------------------------------------------------------------------
    function Is_Blank (C : Character) return Boolean is
    begin
       return C = ' ' or else C = Latin_1.HT;
    end Is_Blank;
 
+   ---------------------------------------------------------------------------
    function Is_EoL (C : Character) return Boolean is
    begin
       return C = Latin_1.CR or else C = Latin_1.LF;

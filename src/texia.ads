@@ -22,49 +22,54 @@
 
 -- It is based on TeX version 3.1415926
 
-with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
+with Ada.Characters.Latin_1;
 
 package TeXiA is
 
-   Version    : constant String := "0.0 20120421";
-   Copyright  : constant String :=
-      "Copyright (C) 2012, Zhu Qun-Ying. All rights reserved.";
-   GPL_notice : constant String :=
+   package Char renames Ada.Characters.Latin_1;
+   Name          : constant String := "TeXia";
+   Version_Major : constant := 0;
+   Version_Minor : constant := 0;
+   Version_Date  : constant := 20120421;
+   Version_Str   : constant String := "0.0 20120421";
+   Copyright     : constant String := "Copyright (C) 2012, Zhu Qun-Ying.";
+   Short_GPL_Str : constant String := "Licensed under GPLv3 or latter.";
+   GPL_Notice    : constant String :=
       "TeXiA is free software: you can redistribute it and/or modify" &
-      LF &
+      Char.LF &
       "it under the terms of the GNU General Public License as published by" &
-      LF &
+      Char.LF &
       "the Free Software Foundation, either version 3 of the License, or" &
-      LF &
+      Char.LF &
       "(at your option) any later version." &
-      LF &
-      LF &
+      Char.LF &
+      Char.LF &
       "TeXiA is distributed in the hope that it will be useful," &
-      LF &
+      Char.LF &
       "but WITHOUT ANY WARRANTY; without even the implied warranty of" &
-      LF &
+      Char.LF &
       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" &
-      LF &
+      Char.LF &
       "GNU General Public License for more details." &
-      LF &
-      LF &
+      Char.LF &
+      Char.LF &
       "You should have received a copy of the GNU General Public License" &
-      LF &
+      Char.LF &
       "along with this program.  If not, see <http://www.gnu.org/licenses/>." &
-      LF;
+      Char.LF;
 
    -- some global definitionsls
 
    -- greatest index in TeX's internal mem arrary, must be strictly
-   -- less than max_halfword; must be equal to mem_top in INITEX, otherwise >=
-   -- mem_top
+   -- less than max_haChar.LFword; must be equal to mem_top in INITEX,
+   -- otherwise >= mem_top
    mem_max : constant := 30_000;
-   -- smallest index in TeX's internal mem array; must be min_halfword or more;
-   -- must be equal to mem_bot in INITEX, otherwise <= mem_bot
+   -- smallest index in TeX's internal mem array; must be min_haChar.LFword or
+   -- more; must be equal to mem_bot in INITEX, otherwise <= mem_bot
    mem_min : constant := 0;
    -- maximum ber of characters simulataneously present in current lines of
-   -- open files and in control sequences between \csname and \endcsname;
-   -- must not exced max_halfword
+   -- open files and in control sequences between \csname and \endcsname; must
+   -- not exced max_haChar.LFword
    buf_size : constant := 500;
    -- width of context lines on terminal error messages
    erro_line : constant := 72;
@@ -87,7 +92,7 @@ package TeXiA is
    param_size : constant := 60;
    -- maximum number of semantic levels simultaneously active
    nest_size : constant := 40;
-   -- maximum number of strings; must not exceed max_halfword
+   -- maximum number of strings; must not exceed max_haChar.LFword
    max_strings : constant := 3_000;
    -- minimum number of characters that should be available for the user's
    -- control sequences and font names, after TeX's own error messages are
@@ -99,7 +104,7 @@ package TeXiA is
    -- currently about 23_000
    pool_size : constant := 32_000;
    -- space for saving values outside of current group; must be at most
-   -- max_halfword
+   -- max_haChar.LFword
    save_size : constant := 600;
    -- space for hyphenation patterns; should be larger for INITEX than it is in
    -- production versions of TeX
@@ -132,7 +137,6 @@ package TeXiA is
       first         : buf_range_t := 1;
       last          : buf_range_t := 1;
       max_buf_stack : buf_range_t := 1;
-      loc           : buf_range_t;
    end record;
 
 end TeXiA;

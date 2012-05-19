@@ -31,13 +31,15 @@ package TeXiA.File_IO is
    -- set ctx.last := ctx.first
    function input_ln
      (ctx         : access TeXiA.Context_t;
-      file        : Ada.Text_IO.File_Type;
-      bypass_eoln : Boolean)
+      file        : Ada.Text_IO.File_Type)
       return        Boolean;
 
    --  Determines if C is a blank (space or tab)
    function Is_Blank (C : Character) return Boolean;
    pragma Inline (Is_Blank);
+
+   -- terminal IO
+   function init_terminal (ctx : access TeXiA.Context_t)  return Boolean;
 
    -- Determinse if C is a end of line character, either CR or LF
    function Is_EoL (C : Character) return Boolean;

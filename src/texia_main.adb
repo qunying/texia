@@ -6,7 +6,6 @@
 --                                                                          --
 -- This file is part of TeXiA.                                              --
 --                                                                          --
-----
 -- TeXiA is free software: you can redistribute it and/or modify            --
 -- it under the terms of the GNU General Public License as published by     --
 -- the Free Software Foundation, either version 3 of the License, or        --
@@ -23,12 +22,52 @@
 
 with TeXiA;
 with TeXiA.File_IO;
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO;       use Ada.Text_IO;
+with GNAT.Command_Line; use GNAT.Command_Line;
 
 procedure TeXiA_Main is
-
+   CLI_Config      : Command_Line_Configuration;
+   CLI_Help        : aliased Boolean;
+   Display_Version : aliased Boolean;
 begin
-   Put_Line ("TeXiA " & TeXiA.Version);
-   Put_Line (TeXiA.Copyright);
-   Put_Line (TeXiA.GPL_notice);
+   -- defined commmand line arguments
+   Define_Alias (CLI_Config, "-?", "-h");
+   Define_Switch
+     (CLI_Config,
+      Output      => CLI_Help'Access,
+      Switch      => "-h",
+      Long_Switch => "--help",
+      Help        => "Print this help.");
+   Define_Switch
+     (CLI_Config,
+      Output      => Display_Version'Access,
+      Switch      => "-v",
+      Long_Switch => "--version",
+      Help        => "Print version information.");
+
+   Set_Usage
+     (CLI_Config,
+      Usage => "[switches] [input-file]",
+      Help  => TeXiA.Name &
+               " " &
+               TeXiA.Version_Str &
+               " - " &
+               TeXiA.Short_GPL_Str);
+
+   Getopt (CLI_Config);
+   if CLI_Help then
+      Display_Help (CLI_Config);
+   end if;
+   if Display_Version then
+      Put_Line (TeXiA.Name & " " & TeXiA.Version_Str);
+      Put_Line (TeXiA.Copyright);
+      New_Line;
+      Put_Line (TeXiA.GPL_Notice);
+      return;
+   end if;
+
+exception
+   when Exit_From_Command_Line | Invalid_Switch =>
+      null; -- OK for this exception
+
 end TeXiA_Main;
