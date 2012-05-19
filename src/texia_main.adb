@@ -1,34 +1,42 @@
-------------------------------------------------------------------------------
---                          TeXiA - TeX in Ada                              --
---                                                                          --
--- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                 --
--- All rights reserved.                                                     --
---                                                                          --
--- This file is part of TeXiA.                                              --
---                                                                          --
--- TeXiA is free software: you can redistribute it and/or modify            --
--- it under the terms of the GNU General Public License as published by     --
--- the Free Software Foundation, either version 3 of the License, or        --
--- (at your option) any later version.                                      --
---                                                                          --
--- TeXiA is distributed in the hope that it will be useful,                 --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of           --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            --
--- GNU General Public License for more details.                             --
---                                                                          --
--- You should have received a copy of the GNU General Public License        --
--- along with this program.  If not, see <http://www.gnu.org/licenses/>.    --
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+--                          TeXiA - TeX in Ada                               --
+--                                                                           --
+-- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                  --
+-- All rights reserved.                                                      --
+--                                                                           --
+-- This file is part of TeXiA.                                               --
+--                                                                           --
+-- TeXiA is free software: you can redistribute it and/or modify             --
+-- it under the terms of the GNU General Public License as published by      --
+-- the Free Software Foundation, either version 3 of the License, or         --
+-- (at your option) any later version.                                       --
+--                                                                           --
+-- TeXiA is distributed in the hope that it will be useful,                  --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of            --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             --
+-- GNU General Public License for more details.                              --
+--                                                                           --
+-- As a special exception under Section 7 of GPL version 3, running TeXiA on --
+-- input document does not by itself cause the resulting output to be        --
+-- covered by the GNU General Public License.  This exception does not       --
+-- however invalidate any other reasons why the executable file might be     --
+-- covered by the GNU Public License.                                        --
+--                                                                           --
+-- You should have received a copy of the GNU General Public License         --
+-- along with this program.  If not, see <http://www.gnu.org/licenses/>.     --
+-------------------------------------------------------------------------------
 
 with TeXiA;
 with TeXiA.File_IO;
 with Ada.Text_IO;       use Ada.Text_IO;
 with GNAT.Command_Line; use GNAT.Command_Line;
+with Ada.Command_Line;  use Ada.Command_Line;
 
 procedure TeXiA_Main is
    CLI_Config      : Command_Line_Configuration;
    CLI_Help        : aliased Boolean;
    Display_Version : aliased Boolean;
+   ctx             : aliased TeXiA.Context_t;
 begin
    -- defined commmand line arguments
    Define_Alias (CLI_Config, "-?", "-h");
@@ -64,6 +72,16 @@ begin
       New_Line;
       Put_Line (TeXiA.GPL_Notice);
       return;
+   end if;
+
+   if Argument_Count > 1 then
+      Put_Line ("only one input file is allowed.");
+      Display_Help (CLI_Config);
+   end if;
+   if Argument_Count = 0 then
+      if not TeXiA.File_IO.init_terminal (ctx'Access) then
+         return;
+      end if;
    end if;
 
 exception

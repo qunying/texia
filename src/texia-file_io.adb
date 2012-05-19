@@ -1,4 +1,5 @@
 -------------------------------------------------------------------------------
+--                          TeXiA - TeX in Ada                               --
 --                                                                           --
 -- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                  --
 -- All Rights Reserved.							     --
@@ -14,6 +15,12 @@
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of            --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             --
 -- GNU General Public License for more details.                              --
+--                                                                           --
+-- As a special exception under Section 7 of GPL version 3, running TeXiA on --
+-- input document does not by itself cause the resulting output to be        --
+-- covered by the GNU General Public License.  This exception does not       --
+-- however invalidate any other reasons why the executable file might be     --
+-- covered by the GNU Public License.                                        --
 --                                                                           --
 -- You should have received a copy of the GNU General Public License         --
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
@@ -61,8 +68,8 @@ package body TeXiA.File_IO is
          ctx.max_buf_stack := ctx.last + 1;
       end if;
       -- trim space at the end
-      while ctx.last > ctx.first and then Is_Blank (ctx.buffer (ctx.last - 1))
-      loop
+      while ctx.last > ctx.first
+        and then Is_Blank (ctx.buffer (ctx.last - 1)) loop
          ctx.last := ctx.last - 1;
       end loop;
 
@@ -75,7 +82,7 @@ package body TeXiA.File_IO is
          if first = ctx.last then
             ctx.last := ctx.first;
          else
-            first                                      := first - 1;
+            first := first - 1;
 
             ctx.buffer (1 .. (ctx.last - 1 - first))   :=
               ctx.buffer (first + 1 .. ctx.last - 1);
@@ -94,6 +101,7 @@ package body TeXiA.File_IO is
    -- s.37 init terminal
    function init_terminal (ctx : access TeXiA.Context_t) return Boolean is
    begin
+      Put_Line (banner);
       loop
          Put ("**");
          Flush (Standard_Output);
@@ -104,10 +112,10 @@ package body TeXiA.File_IO is
          end if;
          --- need to use current input st
          if ctx.last = ctx.first then
-            New_Line;
             Put_Line ("Please type the name of your input file.");
+         else
+            return True;
          end if;
-         return True;
       end loop;
    end init_terminal;
 

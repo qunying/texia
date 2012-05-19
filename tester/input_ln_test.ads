@@ -1,4 +1,5 @@
 -------------------------------------------------------------------------------
+--                          TeXiA - TeX in Ada                               --
 --                                                                           --
 -- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                  --
 -- All Rights Reserved.							     --

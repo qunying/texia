@@ -1,4 +1,5 @@
 -------------------------------------------------------------------------------
+--                          TeXiA - TeX in Ada                               --
 --                                                                           --
 -- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                  --
 -- All Rights Reserved.							     --
@@ -24,7 +25,7 @@ with Ahven.Framework; use Ahven.Framework;
 with input_ln_test;
 
 procedure texia_tester is
-   s : Test_Suite := Create_Suite ("All");
+   s : Test_Suite := Create_Suite ("TeXiA unit test");
 begin
    Add_Test (s, new input_ln_test.Test);
    Ahven.Text_Runner.Run (s);

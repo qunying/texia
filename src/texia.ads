@@ -1,24 +1,31 @@
-------------------------------------------------------------------------------
---                          TeXiA - TeX in Ada                              --
---                                                                          --
--- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                 --
--- All rights reserved.                                                     --
---                                                                          --
--- This file is part of TeXiA.                                              --
---                                                                          --
--- TeXiA is free software: you can redistribute it and/or modify            --
--- it under the terms of the GNU General Public License as published by     --
--- the Free Software Foundation, either version 3 of the License, or        --
--- (at your option) any later version.                                      --
---                                                                          --
--- TeXiA is distributed in the hope that it will be useful,                 --
--- but WITHOUT ANY WARRANTY; without even the implied warranty of           --
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            --
--- GNU General Public License for more details.                             --
---                                                                          --
--- You should have received a copy of the GNU General Public License        --
--- along with this program.  If not, see <http://www.gnu.org/licenses/>.    --
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+--                          TeXiA - TeX in Ada                               --
+--                                                                           --
+-- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                  --
+-- All rights reserved.                                                      --
+--                                                                           --
+-- This file is part of TeXiA.                                               --
+--                                                                           --
+-- TeXiA is free software: you can redistribute it and/or modify             --
+-- it under the terms of the GNU General Public License as published by      --
+-- the Free Software Foundation, either version 3 of the License, or         --
+-- (at your option) any later version.                                       --
+--                                                                           --
+-- TeXiA is distributed in the hope that it will be useful,                  --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of            --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             --
+-- GNU General Public License for more details.                              --
+--                                                                           --
+-- As a special exception under Section 7 of GPL version 3, running TeXiA on --
+--                                                                           --
+-- input document does not by itself cause the resulting output to be        --
+-- covered by the GNU General Public License.  This exception does not       --
+-- however invalidate any other reasons why the executable file might be     --
+-- covered by the GNU Public License.                                        --
+--                                                                           --
+-- You should have received a copy of the GNU General Public License         --
+-- along with this program.  If not, see <http://www.gnu.org/licenses/>.     --
+-------------------------------------------------------------------------------
 
 -- It is based on TeX version 3.1415926
 
@@ -27,7 +34,7 @@ with Ada.Characters.Latin_1;
 package TeXiA is
 
    package Char renames Ada.Characters.Latin_1;
-   Name          : constant String := "TeXia";
+   Name          : constant String := "TeXiA";
    Version_Major : constant := 0;
    Version_Minor : constant := 0;
    Version_Date  : constant := 20120421;
@@ -53,11 +60,25 @@ package TeXiA is
       "GNU General Public License for more details." &
       Char.LF &
       Char.LF &
+      "As a special exception under Section 7 of GPL version 3, " &
+      "running TeXiA on" &
+      Char.LF &
+      "input document does not by itself cause the resulting output to be" &
+      Char.LF &
+      "covered by the GNU General Public License.  This exception does not" &
+      Char.LF &
+      "however invalidate any other reasons why the executable file might be" &
+      Char.LF &
+      "covered by the GNU Public License." &
+      Char.LF &
+      Char.LF &
       "You should have received a copy of the GNU General Public License" &
       Char.LF &
       "along with this program.  If not, see <http://www.gnu.org/licenses/>." &
       Char.LF;
 
+   banner : constant String :=
+      "This is " & Name & ", Verison " & Version_Str & ", " & Short_GPL_Str;
    -- some global definitionsls
 
    -- greatest index in TeX's internal mem arrary, must be strictly
@@ -130,13 +151,14 @@ package TeXiA is
    subtype buf_range_t is Integer range 1 .. buf_size + 1;
 
    type Context_t is record
-      bad           : Integer;
+      bad           : Integer     := 0;
       name_of_file  : String (1 .. file_name_size);
       name_length   : name_length_t;
       buffer        : String (buf_range_t'Range);
       first         : buf_range_t := 1;
       last          : buf_range_t := 1;
       max_buf_stack : buf_range_t := 1;
+
    end record;
 
 end TeXiA;

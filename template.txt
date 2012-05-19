@@ -15,6 +15,12 @@
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             --
 -- GNU General Public License for more details.                              --
 --                                                                           --
+-- As a special exception under Section 7 of GPL version 3, running TeXiA on --
+-- input document does not by itself cause the resulting output to be        --
+-- covered by the GNU General Public License.  This exception does not       --
+-- however invalidate any other reasons why the executable file might be     --
+-- covered by the GNU Public License.                                        --
+--                                                                           --
 -- You should have received a copy of the GNU General Public License         --
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
