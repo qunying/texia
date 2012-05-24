@@ -34,9 +34,9 @@ package TeXiA.File_IO is
 
    -- s.31 brings the next line of input from the given file into available
    -- positions of the buffer array and returns true, unless the file has
-   -- already been entirely read, in which case it reutrns false and
+   -- already been entirely read, in which case it returns false and
    -- set ctx.last := ctx.first
-   function input_ln
+   function Input_Ln
      (ctx         : access TeXiA.Context_t;
       file        : Ada.Text_IO.File_Type)
       return        Boolean;
@@ -46,9 +46,9 @@ package TeXiA.File_IO is
    pragma Inline (Is_Blank);
 
    -- terminal IO
-   function init_terminal (ctx : access TeXiA.Context_t)  return Boolean;
+   function Init_Terminal (ctx : access TeXiA.Context_t)  return Boolean;
 
-   -- Determinse if C is a end of line character, either CR or LF
+   -- Determine if C is a end of line character, either CR or LF
    function Is_EoL (C : Character) return Boolean;
    pragma Inline (Is_Blank);
 end TeXiA.File_IO;

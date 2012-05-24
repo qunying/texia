@@ -47,7 +47,7 @@ package body input_ln_test is
 
    type line_test is record
       line_dat : SU.Unbounded_String;
-      last     : TeXiA.buf_range_t;
+      last     : TeXiA.Buf_Range_T;
       expect   : Boolean;
       empty    : Boolean := False;
    end record;
@@ -110,7 +110,7 @@ package body input_ln_test is
       SIO.Close (test_stream);
       Open (test_file, In_File, test_filename);
       for i in line_test_data'Range loop
-         val := input_ln (texia_ctx'Access, test_file);
+         val := Input_Ln (texia_ctx'Access, test_file);
          if val /= line_test_data (i).expect
            or else (line_test_data (i).expect
                    and then ((line_test_data (i).empty
@@ -126,12 +126,12 @@ package body input_ln_test is
 
       -- test for buffer overflow exception
       SIO.Open (test_stream, SIO.Out_File, test_filename);
-      for i in 1 .. TeXiA.buf_range_t'Last - 1 loop
+      for i in 1 .. TeXiA.Buf_Range_T'Last - 1 loop
          Character'Write (SIO.Stream (test_stream), 'A');
       end loop;
       SIO.Close (test_stream);
       Open (test_file, In_File, test_filename);
-      val := input_ln (texia_ctx'Access, test_file);
+      val := Input_Ln (texia_ctx'Access, test_file);
       Close (test_file);
       Ahven.Fail ("No exception captured.");
    exception

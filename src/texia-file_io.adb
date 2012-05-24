@@ -35,25 +35,25 @@ package body TeXiA.File_IO is
    package Latin_1 renames Ada.Characters.Latin_1;
 
    ---------------------------------------------------------------------------
-   function input_ln
+   function Input_Ln
      (ctx  : access TeXiA.Context_t;
       file : Ada.Text_IO.File_Type)
       return Boolean
    is
       last         : Natural;
-      first        : buf_range_t := ctx.first;
+      first        : Buf_Range_T := ctx.first;
       crln_trimmed : Boolean     := False;
    begin
       ctx.last := ctx.first;
 
       Get_Line (File => file, Item => ctx.buffer, Last => last);
-      if last + 2 >= buf_range_t'Last then
+      if last + 2 >= Buf_Range_T'Last then
          -- report overflow here
          Put
            (Standard_Error,
             "! Unable to read an entire line---" & "bufsize=");
          -- output buffer range without leading space
-         Put (Item => Integer (buf_range_t'Last - 1), Width => 1);
+         Put (Item => Integer (Buf_Range_T'Last - 1), Width => 1);
          New_Line;
          Put_Line (Standard_Error, "Please increase buf_size in texia.ads.");
          raise Buffer_Overflow;
@@ -62,7 +62,7 @@ package body TeXiA.File_IO is
          return True;
       end if;
 
-      ctx.last := buf_range_t (last) + 1;
+      ctx.last := Buf_Range_T (last) + 1;
 
       if ctx.last > ctx.max_buf_stack then
          ctx.max_buf_stack := ctx.last + 1;
@@ -95,17 +95,17 @@ package body TeXiA.File_IO is
    exception
       when End_Error =>
          return False;
-   end input_ln;
+   end Input_Ln;
 
    ---------------------------------------------------------------------------
    -- s.37 init terminal
-   function init_terminal (ctx : access TeXiA.Context_t) return Boolean is
+   function Init_Terminal (ctx : access TeXiA.Context_t) return Boolean is
    begin
       Put_Line (banner);
       loop
          Put ("**");
          Flush (Standard_Output);
-         if not input_ln (ctx, Standard_Input) then
+         if not Input_Ln (ctx, Standard_Input) then
             New_Line;
             Put_Line ("! End of file on the terminal... why?");
             return False;
@@ -117,7 +117,7 @@ package body TeXiA.File_IO is
             return True;
          end if;
       end loop;
-   end init_terminal;
+   end Init_Terminal;
 
    ---------------------------------------------------------------------------
    function Is_Blank (C : Character) return Boolean is

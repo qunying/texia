@@ -5,3 +5,10 @@ system and also programming in Ada.
 
 It has been in my mind for years, but only now has some slow progress.  Not
 sure when it will be finished.
+
+-- It is based on TeX version 3.1415926 With help from commonTeX, yytex and
+-- texlive web2c code
+--
+-- Reference book: TeX: The Program (Computers and Typesetting, Volume B),
+-- by Donald E. Knuth, Addison - Wesley, millennium edition, 2000,
+-- ISBN 0-201-13437-3.

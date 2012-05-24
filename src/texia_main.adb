@@ -36,7 +36,7 @@ procedure TeXiA_Main is
    CLI_Config      : Command_Line_Configuration;
    CLI_Help        : aliased Boolean;
    Display_Version : aliased Boolean;
-   ctx             : aliased TeXiA.Context_t;
+   ctx             : aliased TeXiA.Context_T;
 begin
    -- defined commmand line arguments
    Define_Alias (CLI_Config, "-?", "-h");
@@ -79,13 +79,13 @@ begin
       Display_Help (CLI_Config);
    end if;
    if Argument_Count = 0 then
-      if not TeXiA.File_IO.init_terminal (ctx'Access) then
+      if not TeXiA.File_IO.Init_Terminal (ctx'Access) then
          return;
       end if;
    end if;
 
 exception
    when Exit_From_Command_Line | Invalid_Switch =>
-      null; -- OK for this exception
+      null; -- OK for these exceptions
 
 end TeXiA_Main;
