@@ -27,6 +27,7 @@ with Ada.Characters.Latin_1;
 with Ada.Streams.Stream_IO;
 with Ada.Exceptions;
 
+with TeXiA.Global;
 with TeXiA.File_IO;
 
 package body input_ln_test is
@@ -47,7 +48,7 @@ package body input_ln_test is
 
    type line_test is record
       line_dat : SU.Unbounded_String;
-      last     : TeXiA.Buf_Range_T;
+      last     : TeXiA.Global.Buf_Range_T;
       expect   : Boolean;
       empty    : Boolean := False;
    end record;
@@ -60,7 +61,7 @@ package body input_ln_test is
    end Initialize;
 
    procedure Test_Addition is
-      texia_ctx      : aliased TeXiA.Context_t;
+      texia_ctx      : aliased TeXiA.Global.Context_T;
       test_file      : TIO.File_Type;
       line_test_data : line_test_lst (1 .. 7);
       val            : Boolean;
@@ -126,7 +127,7 @@ package body input_ln_test is
 
       -- test for buffer overflow exception
       SIO.Open (test_stream, SIO.Out_File, test_filename);
-      for i in 1 .. TeXiA.Buf_Range_T'Last - 1 loop
+      for i in 1 .. TeXiA.Global.Buf_Range_T'Last - 1 loop
          Character'Write (SIO.Stream (test_stream), 'A');
       end loop;
       SIO.Close (test_stream);

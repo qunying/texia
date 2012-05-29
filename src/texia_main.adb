@@ -26,8 +26,10 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.     --
 -------------------------------------------------------------------------------
 
-with TeXiA;
+with TeXiA.Version;
+with TeXiA.Global;
 with TeXiA.File_IO;
+
 with Ada.Text_IO;       use Ada.Text_IO;
 with GNAT.Command_Line; use GNAT.Command_Line;
 with Ada.Command_Line;  use Ada.Command_Line;
@@ -36,7 +38,7 @@ procedure TeXiA_Main is
    CLI_Config      : Command_Line_Configuration;
    CLI_Help        : aliased Boolean;
    Display_Version : aliased Boolean;
-   ctx             : aliased TeXiA.Context_T;
+   ctx             : aliased TeXiA.Global.Context_T;
 begin
    -- defined commmand line arguments
    Define_Alias (CLI_Config, "-?", "-h");
@@ -56,21 +58,21 @@ begin
    Set_Usage
      (CLI_Config,
       Usage => "[switches] [input-file]",
-      Help  => TeXiA.Name &
+      Help  => TeXiA.Version.Name &
                " " &
-               TeXiA.Version_Str &
+               TeXiA.Version.Str &
                " - " &
-               TeXiA.Short_GPL_Str);
+               TeXiA.Version.Short_GPL_Str);
 
    Getopt (CLI_Config);
    if CLI_Help then
       Display_Help (CLI_Config);
    end if;
    if Display_Version then
-      Put_Line (TeXiA.Name & " " & TeXiA.Version_Str);
-      Put_Line (TeXiA.Copyright);
+      Put_Line (TeXiA.Version.Name & " " & TeXiA.Version.Str);
+      Put_Line (TeXiA.Version.Copyright);
       New_Line;
-      Put_Line (TeXiA.GPL_Notice);
+      Put_Line (TeXiA.Version.GPL_Notice);
       return;
    end if;
 

@@ -26,32 +26,55 @@
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
 
-with Ada.Text_IO;
-with TeXiA.Global;
+with Ada.Characters.Latin_1;
 
-package TeXiA.File_IO is
+package TeXiA.Version is
+   package Char renames Ada.Characters.Latin_1;
+   Name          : constant String := "TeXiA";
+   Major : constant := 0;
+   Minor : constant := 0;
+   Date  : constant := 20120421;
+   Str   : constant String := "0.0 20120421";
+   Copyright     : constant String := "Copyright (C) 2012, Zhu Qun-Ying.";
+   Short_GPL_Str : constant String := "Licensed under GPLv3 or latter.";
+   GPL_Notice    : constant String :=
+      "TeXiA is free software: you can redistribute it and/or modify" &
+      Char.LF &
+      "it under the terms of the GNU General Public License as published by" &
+      Char.LF &
+      "the Free Software Foundation, either version 3 of the License, or" &
+      Char.LF &
+      "(at your option) any later version." &
+      Char.LF &
+      Char.LF &
+      "TeXiA is distributed in the hope that it will be useful," &
+      Char.LF &
+      "but WITHOUT ANY WARRANTY; without even the implied warranty of" &
+      Char.LF &
+      "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" &
+      Char.LF &
+      "GNU General Public License for more details." &
+      Char.LF &
+      Char.LF &
+      "As a special exception under Section 7 of GPL version 3, " &
+      "running TeXiA on" &
+      Char.LF &
+      "input document does not by itself cause the resulting output to be" &
+      Char.LF &
+      "covered by the GNU General Public License.  This exception does not" &
+      Char.LF &
+      "however invalidate any other reasons why the executable file might be" &
+      Char.LF &
+      "covered by the GNU Public License." &
+      Char.LF &
+      Char.LF &
+      "You should have received a copy of the GNU General Public License" &
+      Char.LF &
+      "along with this program.  If not, see <http://www.gnu.org/licenses/>.";
 
-   Buffer_Overflow : exception;
+   banner : constant String :=
+      "This is " & Name & ", Version " & Str & ", " & Short_GPL_Str;
 
-   -- s.31 brings the next line of input from the given file into available
-   -- positions of the buffer array and returns true, unless the file has
-   -- already been entirely read, in which case it returns false and
-   -- set ctx.last := ctx.first
-   function Input_Ln
-     (ctx         : access TeXiA.Global.Context_T;
-      file        : Ada.Text_IO.File_Type)
-      return        Boolean;
+end TeXiA.Version;
 
-   --  Determines if C is a blank (space or tab)
-   function Is_Blank (C : Character) return Boolean;
-   pragma Inline (Is_Blank);
-
-   -- terminal IO
-   function Init_Terminal (ctx : access TeXiA.Global.Context_T)  return Boolean;
-
-   -- Determine if C is a end of line character, either CR or LF
-   function Is_EoL (C : Character) return Boolean;
-   pragma Inline (Is_Blank);
-end TeXiA.File_IO;
-
--- vim: sw=3 ts=8 sts=3 expandtab:
+-- vim: sw=3 ts=8 sts=3 expandtab spell :

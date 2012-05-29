@@ -28,6 +28,9 @@
 with Ada.Characters.Latin_1;
 with Ada.Integer_Text_IO;
 
+with TeXiA.Global; use TeXiA.Global;
+with TeXiA.Version; use TeXiA.Version;
+
 package body TeXiA.File_IO is
 
    use Ada.Text_IO;
@@ -36,7 +39,7 @@ package body TeXiA.File_IO is
 
    ---------------------------------------------------------------------------
    function Input_Ln
-     (ctx  : access TeXiA.Context_t;
+     (ctx  : access TeXiA.Global.Context_T;
       file : Ada.Text_IO.File_Type)
       return Boolean
    is
@@ -99,7 +102,7 @@ package body TeXiA.File_IO is
 
    ---------------------------------------------------------------------------
    -- s.37 init terminal
-   function Init_Terminal (ctx : access TeXiA.Context_t) return Boolean is
+   function Init_Terminal (ctx : access TeXiA.Global.Context_T)  return Boolean is
    begin
       Put_Line (banner);
       loop
