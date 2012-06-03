@@ -26,32 +26,14 @@
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
 
-with Ada.Text_IO;
 with TeXiA.Global;
 
-package TeXiA.File_IO is
+package TeXiA.Print is
+   -- s.57 To end a line of text output, call Print_Ln to print an end of line
+   procedure Print_Ln (ctx : in out TeXiA.Global.Context_T);
 
-   Buffer_Overflow : exception;
+   -- s.58 Sends one character to the desired destination
+   procedure Print_Char (ctx : in out TeXiA.Global.Context_T; c : Character);
+end TeXiA.Print;
 
-   -- s.31 brings the next line of input from the given file into available
-   -- positions of the buffer array and returns true, unless the file has
-   -- already been entirely read, in which case it returns false and
-   -- set ctx.last := ctx.first
-   function Input_Ln
-     (ctx         : access TeXiA.Global.Context_T;
-      file        : Ada.Text_IO.File_Type)
-      return        Boolean;
-
-   --  Determines if C is a blank (space or tab)
-   function Is_Blank (C : Character) return Boolean;
-   pragma Inline (Is_Blank);
-
-   -- terminal IO
-   function Init_Terminal (ctx : access TeXiA.Global.Context_T)  return Boolean;
-
-   -- Determine if C is a end of line character, either CR or LF
-   function Is_EoL (C : Character) return Boolean;
-   pragma Inline (Is_Blank);
-end TeXiA.File_IO;
-
--- vim: sw=3 ts=8 sts=3 expandtab spell:
+-- vim: sw=3 ts=8 sts=3 expandtab spell :

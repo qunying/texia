@@ -29,6 +29,7 @@
 with TeXiA.Version;
 with TeXiA.Global;
 with TeXiA.File_IO;
+with TeXiA.Print;
 
 with Ada.Text_IO;       use Ada.Text_IO;
 with GNAT.Command_Line; use GNAT.Command_Line;
@@ -91,3 +92,5 @@ exception
       null; -- OK for these exceptions
 
 end TeXiA_Main;
+
+-- vim: sw=3 ts=8 sts=3 expandtab spell:

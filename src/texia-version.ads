@@ -30,11 +30,13 @@ with Ada.Characters.Latin_1;
 
 package TeXiA.Version is
    package Char renames Ada.Characters.Latin_1;
-   Name          : constant String := "TeXiA";
+
+   Name  : constant String := "TeXiA";
    Major : constant := 0;
    Minor : constant := 0;
    Date  : constant := 20120421;
    Str   : constant String := "0.0 20120421";
+
    Copyright     : constant String := "Copyright (C) 2012, Zhu Qun-Ying.";
    Short_GPL_Str : constant String := "Licensed under GPLv3 or latter.";
    GPL_Notice    : constant String :=

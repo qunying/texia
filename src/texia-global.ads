@@ -26,11 +26,12 @@
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
 
+with Ada.Text_IO;
+
 package TeXiA.Global is
 
-   -- greatest index in Tex's internal mem array, must be strictly
-   -- less than max_halfword; must be equal to mem_top in INITEX,
-   -- otherwise >= mem_top
+   -- greatest index in Tex's internal mem array, must be strictly less than
+   -- max_halfword; must be equal to mem_top in INITEX, otherwise >= mem_top
    mem_max : constant := 30_000;
 
    -- smallest index in TeX's internal mem array; must be min_halfword or more;
@@ -120,8 +121,8 @@ package TeXiA.Global is
    min_quarterword : constant := 0;
    max_quarterword : constant := 255;
 
-   min_halfword  : constant := 0;
-   max_halfword  : constant := 65535;
+   min_halfword : constant := 0;
+   max_halfword : constant := 65535;
 
    subtype Quarterword_T is Integer range min_quarterword .. max_quarterword;
    subtype Halfword_T is Integer range min_halfword .. max_halfword;
@@ -152,9 +153,9 @@ package TeXiA.Global is
          when int_number =>
             inum : Integer;
          when glue_ratio =>
-            gr      : Glue_Ratio_T;
+            gr : Glue_Ratio_T;
          when half_word =>
-            rh, lh  : Halfword_T;
+            rh, lh : Halfword_T;
          when quarter_word =>
             b0, b1, b2, b3 : Quarterword_T;
       end case;
@@ -172,9 +173,31 @@ package TeXiA.Global is
       name  : Halfword_T;
    end record;
 
+   -- s.51 selector value
+   No_Print     : constant := 16;
+   Term_Only    : constant := 17;
+   Log_Only     : constant := 18;
+   Term_and_Log : constant := 19;
+   Pseudo       : constant := 20;
+   New_String   : constant := 21;
+
+   subtype Selector_T is Integer range 0 .. 21;
+   type File_Array is array (Integer range <>) of Ada.Text_IO.File_Type;
+
+   -- s.73 reporting errors
+   type Interaction_Mode_T is (Batch_Mode, Nonstop_Mode, scroll_Mode,
+                               Error_Stop_Mode);
+
+   -- s.76
+   type History_T is (Spotless, Warning_Issued, Error_Message_Issued,
+                      Fatal_Error_Stop);
+   subtype Error_Count_Range_T is Integer range -1 .. 100;
+
    -- TeXiA's global context
    type Context_T is record
       bad           : Integer     := 0;
+      log_file      : Ada.Text_IO.File_Type;
+      write_file    : File_Array (0 .. 15);
       name_of_file  : String (1 .. file_name_size);
       name_length   : Name_Length_T;
       buffer        : String (Buf_Range_T'Range);
@@ -182,6 +205,21 @@ package TeXiA.Global is
       last          : Buf_Range_T := 1;
       max_buf_stack : Buf_Range_T := 1;
       cur_input     : Input_State_T;
+      selector      : Selector_T  := Term_Only;
+      tally         : Integer     := 0;
+      term_offset   : Integer     := 0;
+      file_offset   : Integer     := 0;
+      trick_count   : Integer     := 0;
+      trick_buf     : String (1 .. error_line + 1);
+
+      -- s.74,
+      interaction   : Interaction_Mode_T := Error_Stop_Mode;
+
+      -- s.76, s.77
+      deletions_allowed : Boolean := True;
+      set_box_allowed   : Boolean := True;
+      history           : History_T := Fatal_Error_Stop;
+      erro_count        : Error_Count_Range_T := 0;
    end record;
 
 end TeXiA.Global;
