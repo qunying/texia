@@ -26,17 +26,34 @@
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
 
+-- define some string operations
 with TeXiA.Global;
 
-package TeXiA.Print is
-   -- s.57 To end a line of text output, call Print_Ln to print an end of line
-   procedure Print_Ln (ctx : in out TeXiA.Global.Context_T);
+package TeXiA.String is
+   use TeXiA.Global;
 
-   -- s.58 Sends one character to the desired destination
-   procedure Print_Char (ctx : in out TeXiA.Global.Context_T; c : Character);
+   -----------------------------------------------------------------------
+   -- s.40
+   function Length (ctx : Context_T; idx : pool_pointer) return Integer;
+   pragma Inline (Length);
 
-   -- s.59 output an entire string
-   procedure Print (s : Integer);
-end TeXiA.Print;
+   -----------------------------------------------------------------------
+   -- s.41
+   function Cur_Length (ctx : Context_T) return Integer;
+   pragma Inline (Cur_Length);
 
+   -----------------------------------------------------------------------
+   -- s.42
+   procedure Append_Char (ctx : in out Context_T; Char : Character);
+   pragma Inline (Append_Char);
+
+   -----------------------------------------------------------------------
+   procedure Flush_Char (ctx : in out Context_T);
+   pragma Inline (Flush_Char);
+
+   -----------------------------------------------------------------------
+   procedure Room (ctx : Context_T; idx : pool_pointer);
+   pragma Inline (Room);
+
+end TeXiA.String;
 -- vim: sw=3 ts=8 sts=3 expandtab spell :

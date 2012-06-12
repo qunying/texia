@@ -15,7 +15,7 @@ project Texia is
    end Builder;
 
    package Pretty_Printer is
-      for Default_Switches ("ada") use ("--no-separate-is", "--no-separate-loop-then", "-c4", "-c2");
+      for Default_Switches ("ada") use ("--no-separate-is", "--no-separate-loop-then", "-c4", "-A0", "-A1", "-A3", "-A4", "-A5", "-l2", "-A2");
    end Pretty_Printer;
 
    package Compiler is

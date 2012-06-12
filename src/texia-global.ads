@@ -185,13 +185,28 @@ package TeXiA.Global is
    type File_Array is array (Integer range <>) of Ada.Text_IO.File_Type;
 
    -- s.73 reporting errors
-   type Interaction_Mode_T is (Batch_Mode, Nonstop_Mode, scroll_Mode,
-                               Error_Stop_Mode);
+   type Interaction_Mode_T is (
+      Batch_Mode,
+      Nonstop_Mode,
+      scroll_Mode,
+      Error_Stop_Mode);
 
    -- s.76
-   type History_T is (Spotless, Warning_Issued, Error_Message_Issued,
-                      Fatal_Error_Stop);
+   type History_T is (
+      Spotless,
+      Warning_Issued,
+      Error_Message_Issued,
+      Fatal_Error_Stop);
    subtype Error_Count_Range_T is Integer range -1 .. 100;
+
+   -- s.38 string handling
+   subtype pool_pointer is Integer range 1 .. pool_size;
+   subtype str_number is Integer range 1 .. max_strings;
+
+   type pool_pointer_array is array (str_number'Range) of pool_pointer;
+   type pool_pointer_array_access is access all pool_pointer_array;
+
+   type String_Access is access all String;
 
    -- TeXiA's global context
    type Context_T is record
@@ -205,23 +220,35 @@ package TeXiA.Global is
       last          : Buf_Range_T := 1;
       max_buf_stack : Buf_Range_T := 1;
       cur_input     : Input_State_T;
-      selector      : Selector_T  := Term_Only;
-      tally         : Integer     := 0;
-      term_offset   : Integer     := 0;
-      file_offset   : Integer     := 0;
-      trick_count   : Integer     := 0;
-      trick_buf     : String (1 .. error_line + 1);
+
+      -- s.39
+      str_pool      : String_Access;
+      str_start     : pool_pointer_array_access;
+      pool_ptr      : pool_pointer := 1;
+      str_ptr       : str_number;
+      init_pool_ptr : pool_pointer;
+      init_str_ptr  : str_number;
+
+      -- s.54
+      selector    : Selector_T        := Term_Only;
+      tally       : Integer           := 0;
+      dig         : String (1 .. 15);
+      file_offset : Ada.Text_IO.Count := 0;
+      trick_buf   : String (1 .. error_line + 1);
+      trick_count : Integer           := 0;
+      first_count : Integer           := 0;
 
       -- s.74,
-      interaction   : Interaction_Mode_T := Error_Stop_Mode;
+      interaction : Interaction_Mode_T := Error_Stop_Mode;
 
       -- s.76, s.77
-      deletions_allowed : Boolean := True;
-      set_box_allowed   : Boolean := True;
-      history           : History_T := Fatal_Error_Stop;
+      deletions_allowed : Boolean             := True;
+      set_box_allowed   : Boolean             := True;
+      history           : History_T           := Fatal_Error_Stop;
       erro_count        : Error_Count_Range_T := 0;
    end record;
 
+   String_Overflow : exception;
 end TeXiA.Global;
 
 -- vim: sw=3 ts=8 sts=3 expandtab spell :

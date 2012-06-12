@@ -26,12 +26,13 @@
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
 
-with TeXiA.Global;
-with Ada.Text_IO; use Ada.Text_IO;
+with TeXiA.Global;           use TeXiA.Global;
+with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Characters.Latin_1;
+with TeXiA.String;           use TeXiA.String;
 
 package body TeXiA.Print is
-   use TeXiA.Global;
+
    package Char renames Ada.Characters.Latin_1;
 
    --------------------------------------------------------------------------
@@ -40,7 +41,6 @@ package body TeXiA.Print is
       case ctx.selector is
          when Term_and_Log =>
             New_Line;
-            ctx.term_offset := 0;
             New_Line (ctx.log_file);
             ctx.file_offset := 0;
          when Log_Only =>
@@ -48,7 +48,6 @@ package body TeXiA.Print is
             ctx.file_offset := 0;
          when Term_Only =>
             New_Line;
-            ctx.term_offset := 0;
          when No_Print | Pseudo | New_String =>
             null;
          when 0 .. 15 =>
@@ -57,16 +56,24 @@ package body TeXiA.Print is
    end Print_Ln;
 
    --------------------------------------------------------------------------
-   procedure Print_Char (ctx : in out TeXiA.Global.Context_T; c : Character) is
+   procedure Print_Char
+     (ctx : in out TeXiA.Global.Context_T;
+      c   : Character) is
       -----------------------------------------------------------------------
-      function Needs_Wrapping (Char_Pos : Integer; Offset : Integer)
-        return Boolean is
+      function Needs_Wrapping
+        (Char_Pos : Integer;
+         Offset   : Count)
+         return     Boolean
+      is
       begin
-         if (Char_Pos >= 16#C0# and then Char_Pos <= 16#DF# and then
-             Offset + 2 >= max_print_line) or else
-           (Char_Pos >= 16#E0# and then Char_Pos <= 16#EF# and then
-            Offset + 3 >= max_print_line) or else
-           (Char_Pos >= 16#F0# and then Offset + 4 >= max_print_line) then
+         if (Char_Pos >= 16#C0#
+            and then Char_Pos <= 16#DF#
+            and then Offset + 2 >= max_print_line)
+           or else (Char_Pos >= 16#E0#
+                   and then Char_Pos <= 16#EF#
+                   and then Offset + 3 >= max_print_line)
+           or else (Char_Pos >= 16#F0# and then Offset + 4 >= max_print_line)
+         then
             return True;
          end if;
          return False;
@@ -77,9 +84,8 @@ package body TeXiA.Print is
       procedure Fixed_Term_Offset is
          Char_Pos : Integer := Character'Pos (c);
       begin
-         if Needs_Wrapping (Char_Pos, ctx.term_offset) then
+         if Needs_Wrapping (Char_Pos, Col - 1) then
             New_Line;
-            ctx.term_offset := 0;
          end if;
       end Fixed_Term_Offset;
       pragma Inline (Fixed_Term_Offset);
@@ -93,21 +99,22 @@ package body TeXiA.Print is
          end if;
       end Fixed_Log_Offset;
 
+      -----------------------------------------------------------------------
       procedure Write_Term is
          Char_Pos : Integer := Character'Pos (c);
       begin
-         if c >= Char.Space or else c = Char.LF or else c = Char.CR
+         if c >= Char.Space
+           or else c = Char.LF
+           or else c = Char.CR
            or else c = Char.HT then
             Put (c);
          else
-            if ctx.term_offset + 2 >= max_print_line then
+            if Col + 1 >= max_print_line then
                New_Line;
-               ctx.term_offset := 0;
             end if;
             Put ('^');
             Put ('^');
             Put (Character'Val (Char_Pos + 64));
-            ctx.term_offset := ctx.term_offset + 2;
          end if;
       end Write_Term;
       pragma Inline (Write_Term);
@@ -118,10 +125,8 @@ package body TeXiA.Print is
          when Term_and_Log =>
             Fixed_Term_Offset;
             Write_Term;
-            ctx.term_offset := ctx.term_offset + 1;
-            if ctx.term_offset = max_print_line then
+            if Col - 1 = max_print_line then
                New_Line;
-               ctx.term_offset := 0;
             end if;
 
             Fixed_Log_Offset;
@@ -135,10 +140,8 @@ package body TeXiA.Print is
          when Term_Only =>
             Fixed_Term_Offset;
             Write_Term;
-            ctx.term_offset := ctx.term_offset + 1;
-            if ctx.term_offset = max_print_line then
+            if Col - 1 = max_print_line then
                New_Line;
-               ctx.term_offset := 0;
             end if;
 
          when Log_Only =>
@@ -164,6 +167,11 @@ package body TeXiA.Print is
       ctx.tally := ctx.tally + 1;
    end Print_Char;
 
+   ---------------------------------------------------------------------------
+   procedure Print (s : Integer) is
+   begin
+      null;
+   end Print;
 end TeXiA.Print;
 
 -- vim: sw=3 ts=8 sts=3 expandtab spell :

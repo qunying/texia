@@ -1,4 +1,5 @@
 -------------------------------------------------------------------------------
+--                          TeXiA - TeX in Ada                               --
 --                                                                           --
 -- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                  --
 -- All Rights Reserved.							     --
@@ -24,5 +25,50 @@
 -- You should have received a copy of the GNU General Public License         --
 -- along with this program; if not, see <http://www.gnu.org/licenses/>.      --
 -------------------------------------------------------------------------------
+
+package body TeXiA.String is
+   -----------------------------------------------------------------------
+   -- s.40
+   function Length (ctx : Context_T; idx : pool_pointer) return Integer is
+   begin
+      return Len : Integer do
+         Len := ctx.str_start (idx + 1) - ctx.str_start (idx);
+      end return;
+   end Length;
+
+   -----------------------------------------------------------------------
+   -- s.41
+   function Cur_Length (ctx : Context_T) return Integer is
+   begin
+      return Len : Integer do
+         Len := ctx.pool_ptr - ctx.str_start (ctx.str_ptr);
+      end return;
+   end Cur_Length;
+
+   -----------------------------------------------------------------------
+   -- s.42
+   procedure Append_Char (ctx : in out Context_T; Char : Character) is
+   begin
+      ctx.str_pool (ctx.pool_ptr) := Char;
+      ctx.pool_ptr := ctx.pool_ptr + 1;
+   end Append_Char;
+
+   -----------------------------------------------------------------------
+   procedure Flush_Char (ctx : in out Context_T) is
+   begin
+      -- forget the last char in the pool
+      ctx.pool_ptr := ctx.pool_ptr - 1;
+   end Flush_Char;
+
+   -----------------------------------------------------------------------
+   procedure Room (ctx : Context_T; idx : pool_pointer) is
+   begin
+      if ctx.pool_ptr + idx > pool_size then
+         -- FixME call overflow
+         -- overflow (ctx, "pool size", pool_size - ctx.init_pool_str);
+         null;
+      end if;
+   end Room;
+end TeXiA.String;
 
 -- vim: sw=3 ts=8 sts=3 expandtab spell :
