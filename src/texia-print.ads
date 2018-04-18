@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 --                          TeXiA - TeX in Ada                               --
 --                                                                           --
--- Copyright (C) 2012, Zhu Qun-Ying (zhu.qunying@gmail.com)                  --
--- All Rights Reserved.							     --
+-- Copyright (C) 2012-2018, Zhu Qun-Ying (zhu.qunying@gmail.com)             --
+-- All Rights Reserved.                                                      --
 --                                                                           --
 -- This file is part of TeXiA.                                               --
 --                                                                           --

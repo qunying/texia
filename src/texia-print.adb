@@ -103,10 +103,11 @@ package body TeXiA.Print is
       procedure Write_Term is
          Char_Pos : Integer := Character'Pos (c);
       begin
-         if c >= Char.Space
+         if        c >= Char.Space
            or else c = Char.LF
            or else c = Char.CR
-           or else c = Char.HT then
+           or else c = Char.HT
+         then
             Put (c);
          else
             if Col + 1 >= max_print_line then
